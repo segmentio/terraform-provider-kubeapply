@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    key2: {{.Parameters.value2}}
+    environment: {{.Environment}}
+    accountName: {{.AccountName}}
+    accountID: {{.AccountID}}
+  name: testName
+  namespace: testNamespace2
+{{- if .Parameters.serviceAccount }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{.Parameters.serviceAccount}}
+  namespace: testNamespace2
+{{- end }}
+{{- if lookup .Parameters "testName1" }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{.Parameters.testName1}}
+  namespace: testNamespace3
+{{- end }}

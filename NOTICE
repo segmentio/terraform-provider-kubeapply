@@ -1,0 +1,38 @@
+kubeapply
+Copyright 2021 Twilio, Inc.
+Released under the MIT License. See LICENSE for license terms and conditions.
+
+This project contains the following open source code:
+
+aws-sdk-go Copyright © Amazon
+License:  Apache 2.0
+
+color Copyright © Fatih Arslan
+License: MIT
+
+ghodss/yaml Copyright © Sam Ghods
+License: MIT
+
+go-difflib Copyright © Patrick Mezard
+License: MIT
+
+Kubernetes Copyright © The Kubernetes Authors
+License: Apache 2.0
+
+logrus Copyright © Simon Eskildsen
+License: MIT
+
+logrus-prefixed-formatter Copyright © Denis Parchenko
+License: MIT
+
+sprig Copyright © Masterminds
+License: MIT
+
+tablewriter Copyright © Oleku Konko
+License: MIT
+
+testify Copyright © Mat Ryer, Tyler Bunnell and contributors
+License: MIT
+
+terraform-plugin-sdk Copyright © HashiCorp
+License: Mozilla Public License 2.0
