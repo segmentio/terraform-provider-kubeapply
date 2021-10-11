@@ -6,22 +6,10 @@ LDFLAGS := -ldflags='-X "main.VersionRef=$(VERSION_REF)"'
 
 GOFILES = $(shell find . -iname '*.go' | grep -v -e vendor -e _modules -e _cache -e /data/)
 
-# If / when this provider begins normal development, this should be dynamically determined.
-PROVIDER_VERSION = 0.0.1
-OS = $(shell go env GOOS)
-ARCH = $(shell go env GOARCH)
-TF_PLUGINS_MIRROR_DIR = $(HOME)/.terraform.d/plugins
-
 # Provider targets
 .PHONY: terraform-provider-kubeapply
 terraform-provider-kubeapply:
 	go build -o build/terraform-provider-kubeapply $(LDFLAGS) .
-
-# https://www.terraform.io/docs/cli/config/config-file.html#implied-local-mirror-directories
-.PHONY: terraform-provider-mirror-install
-terraform-provider-mirror-install: terraform-provider-kubeapply
-	mkdir -p $(TF_PLUGINS_MIRROR_DIR)/segment.io/kubeapply/kubeapply/$(PROVIDER_VERSION)/$(OS)_$(ARCH)
-	cp build/terraform-provider-kubeapply $(TF_PLUGINS_MIRROR_DIR)/segment.io/kubeapply/kubeapply/$(PROVIDER_VERSION)/$(OS)_$(ARCH)
 
 # Helper targets
 .PHONY: kadiff
