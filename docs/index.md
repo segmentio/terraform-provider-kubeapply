@@ -99,6 +99,24 @@ use a pre-defined kubeconfig, client certificates, a custom `exec` process, or a
 combination. The options here are adopted from the ones exposed by the Hashicorp Terraform
 provider; see the [Schema](#schema) section below for more details.
 
+### Resource deletions
+
+If `allow_deletes` is set to `true` in the provider (which is the default), then the
+provider will delete resources from the Kubernetes API if they're removed from the Terraform
+state. Note that these deletions are best-effort and non-blocking; after applying a change
+that does a deletion, you'll want to do some manual checking in the cluster to verify that
+the resources are actually gone.
+
+## How it works
+
+On each `plan` run, the provider goes through the following steps:
+
+1. Expand out all of the manifests according to the parameters in each `kubeapply_profile` resource
+2. Run `kubectl diff` and insert the diffs into the resource so they can be seen in the `plan` outputs
+
+When the plan is applied, the provider runs `kubectl apply` on the expanded outputs and cleans
+the diffs out of the state.
+
 ## Schema
 
 ### Required
