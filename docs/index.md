@@ -18,7 +18,7 @@ Unlike other Terraform-based solutions, this provider does not require:
 2. Importing existing resources into the Terraform state
 3. Creating a separate Terraform resource for each Kubernetes resource
 
-Instead, it exposes a high-level [`profile`](/docs/resources/profile.md) resource that operates on
+Instead, it exposes a high-level [`profile`](resources/profile.md) resource that operates on
 arbitrary bundles of YAML or YAML templates. Profiles can be added for existing resources in the
 cluster without doing any state imports and (optionally) can be removed from Terraform without
 forcing the underlying resources to be deleted.
@@ -49,7 +49,7 @@ terraform {
   required_providers {
     kubeapply = {
       source  = "segmentio/kubeapply"
-      version = ">= 0.0.5"
+      version = ">= 0.0.7"
     }
   }
 }
