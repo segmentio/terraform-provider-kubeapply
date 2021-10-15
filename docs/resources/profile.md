@@ -17,8 +17,8 @@ for templating. Here's an example:
 
 ```hcl
 resource "kubeapply_profile" "main_profile" {
-  # Where the manifest templates live; can also be a git reference as allowed
-  # for module sources
+  # Where the manifest templates live; can also be a git reference as
+  # allowed for module sources
   source = "${path.module}/manifests"
 
   parameters = {
@@ -48,7 +48,7 @@ particular, that any custom parameters will be inserted into the `.Parameters` m
 
 So, for instance, you could have a file named `deployment.gotpl.yaml` with the following contents:
 
-```
+```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -93,4 +93,4 @@ Required:
 
 Optional:
 
-- `placeholder` - (String) A placeholder value to use if the upstream value isn't know at plan time
+- `placeholder` - (String) A placeholder value to use if the upstream value isn't known at plan time

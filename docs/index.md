@@ -18,7 +18,7 @@ Unlike other Terraform-based solutions, this provider does not require:
 2. Importing existing resources into the Terraform state
 3. Creating a separate Terraform resource for each Kubernetes resource
 
-Instead, it exposes a high-level [`profile`](resources/profile) resource that operates on
+Instead, it exposes a high-level `profile` resource that operates on
 arbitrary bundles of YAML or YAML templates. Profiles can be added for existing resources in the
 cluster without doing any state imports and (optionally) can be removed from Terraform without
 forcing the underlying resources to be deleted.
@@ -33,9 +33,10 @@ Also, the following tools need to be installed locally and in the `PATH` of what
 running Terraform with the provider:
 
 1. `kubectl` v1.19 or later
-2. The `kadiff` utility defined in this repo and installable via `make install-kadiff`. The latter
-  is used for generating more structured Kubernetes diffs than the default diff command.
-
+2. The `kadiff` utility defined in the
+  [provider git repo](https://github.com/segmentio/terraform-provider-kubeapply) and installable
+  via `make install-kadiff`. The latter is used for generating more structured Kubernetes diffs
+  than the default diff command.
 
 ### Including in workspace
 
@@ -122,11 +123,11 @@ the diffs out of the state.
 
 ### Required
 
-- `account_id` - (String) Account ID
-- `account_name` - (String) Account name
+- `account_id` - (String) Account ID; used for templating only, set to an empty string if not applicable
+- `account_name` - (String) Account name; used for templating only, set to an empty string if not applicable
 - `cluster_name` - (String) Name of the cluster
-- `environment` - (String) Account environment
-- `region` - (String) Region
+- `environment` - (String) Account environment; used for templating only, set to an empty string if not applicable
+- `region` - (String) Region; used for templating only, set to an empty string if not applicable
 
 ### Optional
 
