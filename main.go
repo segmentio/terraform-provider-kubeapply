@@ -82,7 +82,7 @@ func runProvider(ctx context.Context, debugServer bool) error {
 
 	if debugServer {
 		log.Info("Running server in debug mode")
-		return plugin.Debug(ctx, "segment.io/kubeapply/kubeapply", opts)
+		return plugin.Debug(ctx, "segmentio/kubeapply", opts)
 	}
 
 	plugin.Serve(opts)

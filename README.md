@@ -40,7 +40,8 @@ a number of differences that are worth noting:
 
 ## Installation and usage
 
-See the [docs](/docs).
+See the
+[documentation in the Terraform Registry](https://registry.terraform.io/providers/segmentio/kubeapply/latest/docs). A local version of this content can be found [here](/docs).
 
 ## Debugging
 

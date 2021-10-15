@@ -68,3 +68,10 @@ workflows:
       - publish:
           context: segmentio-org-global
           requires: [test]
+          filters:
+            # Never publish from a branch event
+            branches:
+              ignore: /.*/
+            # Release only on tag push events like vX[.Y.Z...][-whatever]
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*(-[a-zA-Z0-9-]+)?/
