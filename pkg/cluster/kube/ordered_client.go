@@ -12,7 +12,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
-	"strings"
 
 	"github.com/segmentio/terraform-provider-kubeapply/pkg/util"
 	log "github.com/sirupsen/logrus"
@@ -240,16 +239,44 @@ func (k *OrderedClient) Delete(
 		toDelete = append(toDelete, idComponents)
 	}
 
+	rawResources, err := runKubectlOutput(
+		ctx,
+		[]string{"api-resources"},
+		nil,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	apiResources, err := parseResourcesTable(string(rawResources))
+	if err != nil {
+		return nil, err
+	}
+	resourceNames := map[string]string{}
+
+	for _, apiResource := range apiResources {
+		resourceNames[apiResource.kind] = apiResource.name
+	}
+
 	allResults := [][]byte{}
 
 	for _, idComponents := range toDelete {
+		resourceName, ok := resourceNames[idComponents.kind]
+		if !ok {
+			log.Warnf(
+				"Could not find resource name for kind %s; skipping delete",
+				idComponents.kind,
+			)
+			continue
+		}
+
 		args := []string{
 			"--kubeconfig",
 			k.kubeConfigPath,
 			"--ignore-not-found=true",
 			"--wait=false",
 			"delete",
-			strings.ToLower(idComponents.kind),
+			resourceName,
 			idComponents.name,
 		}
 		if idComponents.namespace != "" {
