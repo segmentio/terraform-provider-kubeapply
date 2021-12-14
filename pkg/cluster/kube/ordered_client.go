@@ -241,11 +241,15 @@ func (k *OrderedClient) Delete(
 
 	rawResources, err := runKubectlOutput(
 		ctx,
-		[]string{"api-resources"},
+		[]string{
+			"--kubeconfig",
+			k.kubeConfigPath,
+			"api-resources",
+		},
 		nil,
 	)
 	if err != nil {
-		return nil, err
+		return rawResources, err
 	}
 
 	apiResources, err := parseResourcesTable(string(rawResources))
