@@ -11,7 +11,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - go-modules-{{ checksum "go.sum" }}-2
+            - go-modules-{{ checksum "go.sum" }}
       - setup_remote_docker:
           reusable: true
           docker_layer_caching: true
@@ -29,7 +29,7 @@ jobs:
             SNYK_LEVEL: 'FLHI'
           command: curl -sL https://raw.githubusercontent.com/segmentio/snyk_helpers/master/initialization/snyk.sh | sh
       - save_cache:
-          key: go-modules-{{ checksum "go.sum" }}-2
+          key: go-modules-{{ checksum "go.sum" }}
           paths:
             - "/go/pkg/mod"
 
