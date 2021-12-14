@@ -3,7 +3,7 @@ jobs:
   test:
     working_directory: /go/src/github.com/segmentio/terraform-provider-kubeapply
     docker:
-      - image: circleci/golang:1.16
+      - image: circleci/golang:1.17
         environment:
           GO111MODULE: "on"
 
@@ -36,7 +36,7 @@ jobs:
   publish:
     working_directory: /go/src/github.com/segmentio/terraform-provider-kubeapply
     docker:
-      - image: circleci/golang:1.16
+      - image: circleci/golang:1.17
 
     steps:
       - checkout

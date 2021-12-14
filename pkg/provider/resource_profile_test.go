@@ -771,6 +771,7 @@ func TestDiffs(t *testing.T) {
 				newComputed: map[string]struct{}{},
 				oldValues: map[string]interface{}{
 					"show_expanded": false,
+					"no_diff":       false,
 					"diff":          map[string]string{},
 					"parameters": map[string]interface{}{
 						"serviceAccount": "testServiceAccount",
@@ -786,6 +787,7 @@ func TestDiffs(t *testing.T) {
 				},
 				newValues: map[string]interface{}{
 					"show_expanded": false,
+					"no_diff":       false,
 					"diff":          map[string]string{},
 					"parameters": map[string]interface{}{
 						"serviceAccount": "testServiceAccount",
@@ -817,6 +819,7 @@ func TestDiffs(t *testing.T) {
 				newComputed: map[string]struct{}{},
 				oldValues: map[string]interface{}{
 					"show_expanded": true,
+					"no_diff":       false,
 					"diff":          map[string]string{},
 					"parameters": map[string]interface{}{
 						"serviceAccount": "testServiceAccount",
@@ -832,6 +835,7 @@ func TestDiffs(t *testing.T) {
 				},
 				newValues: map[string]interface{}{
 					"show_expanded": true,
+					"no_diff":       false,
 					"diff":          map[string]string{},
 					"parameters": map[string]interface{}{
 						"serviceAccount": "testServiceAccount",
@@ -881,6 +885,7 @@ metadata:
 				newComputed: map[string]struct{}{},
 				oldValues: map[string]interface{}{
 					"show_expanded": false,
+					"no_diff":       false,
 					"diff":          map[string]string{},
 					"parameters": map[string]interface{}{
 						"serviceAccount": "testServiceAccount",
@@ -896,6 +901,7 @@ metadata:
 				},
 				newValues: map[string]interface{}{
 					"show_expanded": false,
+					"no_diff":       false,
 					"diff":          map[string]string{},
 					"parameters": map[string]interface{}{
 						"serviceAccount": "testServiceAccount",
@@ -929,6 +935,7 @@ metadata:
 				newComputed: map[string]struct{}{},
 				oldValues: map[string]interface{}{
 					"show_expanded": false,
+					"no_diff":       false,
 					"diff":          map[string]string{},
 					"parameters": map[string]interface{}{
 						"serviceAccount": "testServiceAccount",
@@ -944,6 +951,7 @@ metadata:
 				},
 				newValues: map[string]interface{}{
 					"show_expanded": false,
+					"no_diff":       false,
 					"diff":          map[string]string{},
 					"parameters": map[string]interface{}{
 						"serviceAccount": "testServiceAccount",
@@ -969,14 +977,15 @@ metadata:
 			expectedResourcesHash: "b645c4392b2eeb4020a7be44bb3c3c1d",
 		},
 		{
-			description:  "can't run",
+			description:  "simple static change with no_diff set to true",
 			allowDeletes: false,
-			canRun:       false,
+			canRun:       true,
 			forceDiffs:   false,
 			data: &fakeDiffChangerSetter{
 				newComputed: map[string]struct{}{},
 				oldValues: map[string]interface{}{
 					"show_expanded": false,
+					"no_diff":       true,
 					"diff":          map[string]string{},
 					"parameters": map[string]interface{}{
 						"serviceAccount": "testServiceAccount",
@@ -992,6 +1001,55 @@ metadata:
 				},
 				newValues: map[string]interface{}{
 					"show_expanded": false,
+					"no_diff":       true,
+					"diff":          map[string]string{},
+					"parameters": map[string]interface{}{
+						"serviceAccount": "testServiceAccount",
+						"value2":         "new test2",
+					},
+					"resources": map[string]interface{}{
+						"v1.Service.testNamespace2.testName":                  "c81b9e717544afb0556f57c002ee6f60",
+						"v1.ServiceAccount.testNamespace2.testServiceAccount": "9a754595e5b2796e3fa641d1078d47e9",
+					},
+					"resources_hash": "b645c4392b2eeb4020a7be44bb3c3c1d",
+					"set":            &schema.Set{},
+					"source":         "testdata/app2",
+				},
+			},
+			expectedDiff:          map[string]interface{}{},
+			expectedExpandedFiles: map[string]interface{}{},
+			expectedResources: map[string]interface{}{
+				"v1.Service.testNamespace2.testName":                  "8095dc3f74b345c1477271bbcbdd907f",
+				"v1.ServiceAccount.testNamespace2.testServiceAccount": "9a754595e5b2796e3fa641d1078d47e9",
+			},
+			expectedResourcesHash: "b645c4392b2eeb4020a7be44bb3c3c1d",
+		},
+		{
+			description:  "can't run",
+			allowDeletes: false,
+			canRun:       false,
+			forceDiffs:   false,
+			data: &fakeDiffChangerSetter{
+				newComputed: map[string]struct{}{},
+				oldValues: map[string]interface{}{
+					"show_expanded": false,
+					"no_diff":       false,
+					"diff":          map[string]string{},
+					"parameters": map[string]interface{}{
+						"serviceAccount": "testServiceAccount",
+						"value2":         "test2",
+					},
+					"resources": map[string]interface{}{
+						"v1.Service.testNamespace2.testName":                  "c81b9e717544afb0556f57c002ee6f60",
+						"v1.ServiceAccount.testNamespace2.testServiceAccount": "9a754595e5b2796e3fa641d1078d47e9",
+					},
+					"resources_hash": "4e02e6b6e828fc728bb440b2c1dc518b",
+					"set":            &schema.Set{},
+					"source":         "testdata/app2",
+				},
+				newValues: map[string]interface{}{
+					"show_expanded": false,
+					"no_diff":       false,
 					"diff":          map[string]string{},
 					"parameters": map[string]interface{}{
 						"serviceAccount": "testServiceAccount",
@@ -1028,6 +1086,7 @@ metadata:
 				newComputed: map[string]struct{}{},
 				oldValues: map[string]interface{}{
 					"show_expanded": false,
+					"no_diff":       false,
 					"diff":          map[string]string{},
 					"parameters": map[string]interface{}{
 						"serviceAccount": "testServiceAccount",
@@ -1043,6 +1102,7 @@ metadata:
 				},
 				newValues: map[string]interface{}{
 					"show_expanded": false,
+					"no_diff":       false,
 					"diff":          map[string]string{},
 					"parameters":    map[string]interface{}{},
 					"resources": map[string]interface{}{
@@ -1076,6 +1136,7 @@ metadata:
 				newComputed: map[string]struct{}{},
 				oldValues: map[string]interface{}{
 					"show_expanded": false,
+					"no_diff":       false,
 					"diff":          map[string]string{},
 					"parameters": map[string]interface{}{
 						"serviceAccount": "testServiceAccount",
@@ -1102,6 +1163,7 @@ metadata:
 				},
 				newValues: map[string]interface{}{
 					"show_expanded": false,
+					"no_diff":       false,
 					"diff":          map[string]string{},
 					"parameters": map[string]interface{}{
 						"serviceAccount": "testServiceAccount",
@@ -1150,6 +1212,7 @@ metadata:
 				newComputed: map[string]struct{}{},
 				oldValues: map[string]interface{}{
 					"show_expanded": false,
+					"no_diff":       false,
 					"diff":          map[string]string{},
 					"parameters": map[string]interface{}{
 						"serviceAccount": "testServiceAccount",
@@ -1165,6 +1228,7 @@ metadata:
 				},
 				newValues: map[string]interface{}{
 					"show_expanded": false,
+					"no_diff":       false,
 					"diff":          map[string]string{},
 					"parameters": map[string]interface{}{
 						"serviceAccount": "",
@@ -1199,6 +1263,7 @@ metadata:
 				newComputed: map[string]struct{}{},
 				oldValues: map[string]interface{}{
 					"show_expanded": false,
+					"no_diff":       false,
 					"diff":          map[string]string{},
 					"parameters": map[string]interface{}{
 						"serviceAccount": "testServiceAccount",
@@ -1214,6 +1279,7 @@ metadata:
 				},
 				newValues: map[string]interface{}{
 					"show_expanded": false,
+					"no_diff":       false,
 					"diff":          map[string]string{},
 					"parameters": map[string]interface{}{
 						"serviceAccount": "",
