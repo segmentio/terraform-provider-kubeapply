@@ -3,7 +3,7 @@ jobs:
   test:
     working_directory: /go/src/github.com/segmentio/terraform-provider-kubeapply
     docker:
-      - image: circleci/golang:1.16
+      - image: circleci/golang:1.17
         environment:
           GO111MODULE: "on"
 
@@ -11,7 +11,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - go-modules-{{ checksum "go.sum" }}
+            - go-modules-{{ checksum "go.sum" }}-2
       - setup_remote_docker:
           reusable: true
           docker_layer_caching: true
@@ -29,14 +29,14 @@ jobs:
             SNYK_LEVEL: 'FLHI'
           command: curl -sL https://raw.githubusercontent.com/segmentio/snyk_helpers/master/initialization/snyk.sh | sh
       - save_cache:
-          key: go-modules-{{ checksum "go.sum" }}
+          key: go-modules-{{ checksum "go.sum" }}-2
           paths:
             - "/go/pkg/mod"
 
   publish:
     working_directory: /go/src/github.com/segmentio/terraform-provider-kubeapply
     docker:
-      - image: circleci/golang:1.16
+      - image: circleci/golang:1.17
 
     steps:
       - checkout
