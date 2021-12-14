@@ -170,7 +170,16 @@ func (p *providerContext) expand(
 }
 
 func (p *providerContext) shouldDiff(data resourceChanger) bool {
-	return p.forceDiffs || data.HasChange("resources")
+	if data.Get("no_diff").(bool) {
+		// Diffs are explicitly turned off in the resource
+		return false
+	} else if p.forceDiffs {
+		// Diffs are turned on at the provider
+		return true
+	} else {
+		// There are resource changes
+		return data.HasChange("resources")
+	}
 }
 
 func (p *providerContext) diff(

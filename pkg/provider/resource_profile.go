@@ -54,10 +54,10 @@ func profileResource() *schema.Resource {
 		},
 		Schema: map[string]*schema.Schema{
 			// Inputs
-			"source": {
-				Type:        schema.TypeString,
-				Description: "Source for profile manifest files in local file system or remote git repo",
-				Required:    true,
+			"no_diff": {
+				Type:        schema.TypeBool,
+				Description: "Don't do a full diff for this resource",
+				Optional:    true,
 			},
 			"parameters": {
 				Type:        schema.TypeMap,
@@ -90,6 +90,11 @@ func profileResource() *schema.Resource {
 				Type:        schema.TypeBool,
 				Description: "Show expanded output",
 				Optional:    true,
+			},
+			"source": {
+				Type:        schema.TypeString,
+				Description: "Source for profile manifest files in local file system or remote git repo",
+				Required:    true,
 			},
 
 			// Computed fields
@@ -375,7 +380,7 @@ func resourceProfileCustomDiff(
 	} else {
 		data.SetNew("diff", map[string]interface{}{})
 		log.Infof(
-			"Resources have not changed for %s",
+			"Skipping diff for %s",
 			moduleName(data),
 		)
 	}

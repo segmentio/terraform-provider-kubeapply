@@ -72,6 +72,7 @@ separated by `---` lines.
 ### Optional
 
 - `id` - (String) The ID of this resource
+- `no_diff` - (Boolean) Skip all diffing for this resource
 - `parameters` - (Map of String) Arbitrary parameters that will be used for profile expansion
 - `set` - (Block Set) Custom, JSON-encoded parameters to be merged parameters above (see [below for nested schema](#nestedblock--set))
 - `show_expanded` - (Boolean) Show expanded output
