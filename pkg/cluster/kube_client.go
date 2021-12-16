@@ -182,14 +182,6 @@ func (cc *KubeClient) Config() *Config {
 	return cc.clusterConfig
 }
 
-// GetNamespaceUID returns the kubernetes identifier for a given namespace in this cluster.
-func (cc *KubeClient) GetNamespaceUID(
-	ctx context.Context,
-	namespace string,
-) (string, error) {
-	return cc.kubeClient.GetNamespaceUID(ctx, namespace)
-}
-
 // Close closes the client and cleans up all of the associated resources.
 func (cc *KubeClient) Close() error {
 	return nil
