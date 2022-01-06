@@ -3,7 +3,6 @@ package cluster
 import (
 	"context"
 
-	"github.com/segmentio/terraform-provider-kubeapply/pkg/cluster/apply"
 	"github.com/segmentio/terraform-provider-kubeapply/pkg/cluster/diff"
 )
 
@@ -11,10 +10,6 @@ import (
 type Client interface {
 	// Apply applies all of the configs at the given path.
 	Apply(ctx context.Context, paths []string, serverSide bool) ([]byte, error)
-
-	// ApplyStructured applies all of the configs at the given path and returns structured,
-	// as opposed to raw, outputs
-	ApplyStructured(ctx context.Context, paths []string, serverSide bool) ([]apply.Result, error)
 
 	// Delete deletes the resources associated with one or more configs.
 	Delete(ctx context.Context, ids []string) ([]byte, error)
@@ -29,9 +24,6 @@ type Client interface {
 
 	// Config returns the config for this cluster.
 	Config() *Config
-
-	// GetNamespaceUID returns the kubernetes identifier for a given namespace in this cluster.
-	GetNamespaceUID(ctx context.Context, namespace string) (string, error)
 
 	// Close cleans up this client.
 	Close() error

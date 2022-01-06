@@ -8,7 +8,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/segmentio/terraform-provider-kubeapply/pkg/cluster/apply"
 	"github.com/segmentio/terraform-provider-kubeapply/pkg/cluster/diff"
 	"github.com/segmentio/terraform-provider-kubeapply/pkg/cluster/kube"
 	log "github.com/sirupsen/logrus"
@@ -77,49 +76,6 @@ func (cc *KubeClient) Apply(
 	return cc.execApply(ctx, paths, "", false)
 }
 
-// ApplyStructured does a structured kubectl apply for the resources at the
-// argument path.
-func (cc *KubeClient) ApplyStructured(
-	ctx context.Context,
-	paths []string,
-	serverSide bool,
-) ([]apply.Result, error) {
-	oldContents, err := cc.execApply(ctx, paths, "json", true)
-	if err != nil {
-		return nil,
-			fmt.Errorf(
-				"Error running apply dry-run: %+v; output: %s",
-				err,
-				string(oldContents),
-			)
-	}
-
-	oldObjs, err := apply.KubeJSONToObjects(oldContents)
-	if err != nil {
-		return nil, err
-	}
-
-	newContents, err := cc.execApply(ctx, paths, "json", false)
-	if err != nil {
-		return nil,
-			fmt.Errorf(
-				"Error running apply: %+v; output: %s",
-				err,
-				string(newContents),
-			)
-	}
-	newObjs, err := apply.KubeJSONToObjects(newContents)
-	if err != nil {
-		return nil, err
-	}
-
-	results, err := apply.ObjsToResults(oldObjs, newObjs)
-	if err != nil {
-		return nil, err
-	}
-	return sortedApplyResults(results), nil
-}
-
 // Delete deletes one or more resources associated with the argument paths.
 func (cc *KubeClient) Delete(
 	ctx context.Context,
@@ -180,14 +136,6 @@ func (cc *KubeClient) DiffStructured(
 // Config returns this client's cluster config.
 func (cc *KubeClient) Config() *Config {
 	return cc.clusterConfig
-}
-
-// GetNamespaceUID returns the kubernetes identifier for a given namespace in this cluster.
-func (cc *KubeClient) GetNamespaceUID(
-	ctx context.Context,
-	namespace string,
-) (string, error) {
-	return cc.kubeClient.GetNamespaceUID(ctx, namespace)
 }
 
 // Close closes the client and cleans up all of the associated resources.

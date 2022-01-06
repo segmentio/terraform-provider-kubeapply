@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/segmentio/terraform-provider-kubeapply/pkg/cluster/apply"
 	"github.com/segmentio/terraform-provider-kubeapply/pkg/cluster/diff"
 )
 
@@ -70,35 +69,6 @@ func (cc *FakeClient) Apply(
 			),
 		),
 		cc.kubectlErr
-}
-
-// ApplyStructured runs a fake structured apply using the configs in the argument
-// path.
-func (cc *FakeClient) ApplyStructured(
-	ctx context.Context,
-	paths []string,
-	serverSide bool,
-) ([]apply.Result, error) {
-	cc.Calls = append(
-		cc.Calls,
-		FakeClientCall{
-			CallType: "ApplyStructured",
-			Paths:    paths,
-		},
-	)
-	return []apply.Result{
-		{
-			Kind: "Deployment",
-			Name: fmt.Sprintf(
-				"apply result for %s with paths %+v",
-				cc.clusterConfig.Cluster,
-				paths,
-			),
-			Namespace:  "test-namespace",
-			OldVersion: "1234",
-			NewVersion: "5678",
-		},
-	}, cc.kubectlErr
 }
 
 // Delete deletes the resources associated with one or more configs.
@@ -192,20 +162,6 @@ func (cc *FakeClient) Config() *Config {
 		},
 	)
 	return cc.clusterConfig
-}
-
-// GetNamespaceUID returns the kubernetes identifier for a given namespace in this cluster.
-func (cc *FakeClient) GetNamespaceUID(
-	ctx context.Context,
-	namespace string,
-) (string, error) {
-	cc.Calls = append(
-		cc.Calls,
-		FakeClientCall{
-			CallType: "GetNamespaceUID",
-		},
-	)
-	return fmt.Sprintf("ns-%s", namespace), cc.kubectlErr
 }
 
 // Close closes the client.
