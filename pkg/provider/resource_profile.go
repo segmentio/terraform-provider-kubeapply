@@ -426,7 +426,7 @@ func resourceProfileUpdate(
 		return diags
 	}
 
-	if len(diffValue) > 0 {
+	if len(diffValue) > 0 || data.Get("no_diff").(bool) {
 		expandResult, err := providerCtx.expand(ctx, data)
 		if err != nil {
 			diags = append(diags, diag.FromErr(err)...)
