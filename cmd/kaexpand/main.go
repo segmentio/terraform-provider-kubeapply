@@ -5,8 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/fatih/color"
 	"github.com/ghodss/yaml"
@@ -165,6 +167,7 @@ func (c kaExpandConfig) toClusterConfig() (*cluster.Config, error) {
 		AccountName: c.AccountName,
 		Environment: c.Environment,
 		Parameters:  map[string]interface{}{},
+		ConfigHash:  rand128Bits(),
 	}
 
 	for _, parameter := range c.Parameters {
@@ -191,6 +194,13 @@ func (c kaExpandConfig) toClusterConfig() (*cluster.Config, error) {
 	}
 
 	return clusterConfig, nil
+}
+
+func rand128Bits() string {
+	rand.Seed(time.Now().Unix())
+	high := rand.Uint64()
+	low := rand.Uint64()
+	return fmt.Sprintf("%08x%08x", high, low)
 }
 
 func runExpand(
