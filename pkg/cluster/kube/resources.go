@@ -1,9 +1,9 @@
 package kube
 
 import (
-	"errors"
-	"fmt"
-	"strings"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/tools/clientcmd"
 )
 
 type apiResource struct {
@@ -14,95 +14,41 @@ type apiResource struct {
 	kind       string
 }
 
-func parseResourcesTable(rawResources string) ([]apiResource, error) {
-	apiResources := []apiResource{}
+var apiResourceLoader = loadApiResourcesFromCluster
 
-	rows := strings.Split(strings.TrimSpace(rawResources), "\n")
-
-	if len(rows) == 0 {
-		return nil, errors.New("No api-resources found")
+func loadApiResourcesFromCluster(kubeConfigPath string) ([]*v1.APIResourceList, error) {
+	restConfig, err := clientcmd.BuildConfigFromFlags("", kubeConfigPath)
+	if err != nil {
+		return nil, err
+	}
+	k8sClient, err := kubernetes.NewForConfig(restConfig)
+	if err != nil {
+		return nil, err
 	}
 
-	header := rows[0]
-	columnStarts := []int{}
-	var prevChar byte = ' '
-
-	for i := 0; i < len(header); i++ {
-		currChar := header[i]
-
-		if prevChar == ' ' && currChar != ' ' {
-			columnStarts = append(columnStarts, i)
-		}
-
-		prevChar = currChar
-	}
-
-	if len(columnStarts) != 5 {
-		return nil, fmt.Errorf(
-			"Unexpected number of columns; expected 5, got %d",
-			len(columnStarts),
-		)
-	}
-
-	for _, row := range rows[1:] {
-		trimmedRow := strings.Trim(row, " ")
-		if len(trimmedRow) == 0 {
-			continue
-		}
-
-		elements := parseRow(trimmedRow, columnStarts)
-
-		if len(elements) < 5 {
-			return nil, fmt.Errorf(
-				"Unexpected number of columns in row %s; expected 5, got %d",
-				trimmedRow,
-				len(elements),
-			)
-		}
-
-		var shortNames []string
-
-		if len(elements[1]) > 0 {
-			shortNames = strings.Split(elements[1], ",")
-		} else {
-			shortNames = []string{}
-		}
-
-		apiResources = append(
-			apiResources,
-			apiResource{
-				name:       elements[0],
-				shortNames: shortNames,
-				apiVersion: elements[2],
-				namespaced: elements[3] == "true",
-				kind:       elements[4],
-			},
-		)
-	}
-
-	return apiResources, nil
+	_, resourceLists, err := k8sClient.ServerGroupsAndResources()
+	return resourceLists, err
 }
 
-func parseRow(row string, columnStarts []int) []string {
-	elements := []string{}
-
-	for i := 0; i < len(columnStarts); i++ {
-		var end int
-		if i < len(columnStarts)-1 {
-			end = columnStarts[i+1]
-		} else {
-			end = len(row)
-		}
-
-		if end > len(row) {
-			break
-		}
-
-		elements = append(
-			elements,
-			strings.TrimRight(row[columnStarts[i]:end], " "),
-		)
+func getApiResources(kubeConfigPath string) ([]apiResource, error) {
+	resourceLists, err := apiResourceLoader(kubeConfigPath)
+	if err != nil {
+		return nil, err
 	}
+	outputResources := []apiResource{}
+	for _, l := range resourceLists {
+		for _, r := range l.APIResources {
+			if r.Name != "" && l.APIVersion != "" && r.Kind != "" {
+				outputResources = append(outputResources, apiResource{
+					name:       r.Name,
+					shortNames: r.ShortNames,
+					apiVersion: l.APIVersion,
+					namespaced: r.Namespaced,
+					kind:       r.Kind,
+				})
+			}
 
-	return elements
+		}
+	}
+	return outputResources, nil
 }
