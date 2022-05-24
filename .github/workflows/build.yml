@@ -13,6 +13,8 @@ jobs:
           go-version: 1.17
       - name: Install Dependencies
         run: go mod vendor
+      - name: Compile
+        run: make terraform-provider-kubeapply
       - name: Run Tests
         run: make test
 
