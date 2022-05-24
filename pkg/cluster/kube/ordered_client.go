@@ -237,20 +237,7 @@ func (k *OrderedClient) Delete(
 		toDelete = append(toDelete, idComponents)
 	}
 
-	rawResources, err := runKubectlOutput(
-		ctx,
-		[]string{
-			"--kubeconfig",
-			k.kubeConfigPath,
-			"api-resources",
-		},
-		nil,
-	)
-	if err != nil {
-		return rawResources, err
-	}
-
-	apiResources, err := parseResourcesTable(string(rawResources))
+	apiResources, err := getApiResources(k.kubeConfigPath)
 	if err != nil {
 		return nil, err
 	}
