@@ -94,7 +94,7 @@ func Provider(providerCtx *providerContext) *schema.Provider {
 						"api_version": {
 							Type:     schema.TypeString,
 							Optional: true,
-							Default:  "client.authentication.k8s.io/v1alpha1",
+							Default:  "client.authentication.k8s.io/v1beta1",
 						},
 						"command": {
 							Type:     schema.TypeString,

@@ -160,6 +160,6 @@ Required:
 
 Optional:
 
-- `api_version` - (String) API version, e.g. `client.authentication.k8s.io/v1alpha1`
+- `api_version` - (String) API version, e.g. `client.authentication.k8s.io/v1beta1`
 - `args` - (List of String) List of args to pass to command
 - `env` - (Map of String) Environment variables to set
