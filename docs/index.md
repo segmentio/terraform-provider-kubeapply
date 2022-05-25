@@ -160,6 +160,6 @@ Required:
 
 Optional:
 
-- `api_version` - (String) API version, e.g. `client.authentication.k8s.io/v1beta1` __IMPORTANT__: For EKS, if you use `aws`CLI v1.24+, you can leave this as the default (`v1beta1`). If you use `aws`CLI >=v1.23, you will need to manually set this value to `client.authentication.k8s.io/v1alpha1` for versions of this provider after `0.0.12`. 
+- `api_version` - (String) API version, e.g. `client.authentication.k8s.io/v1beta1` __IMPORTANT__: For EKS, if you use `aws`CLI v1.24+ or 2.6.3+, you can leave this as the default (`v1beta1`). If you use `aws`CLI <=v1.23 or <2.6.3 , you will need to manually set this value to `client.authentication.k8s.io/v1alpha1` for versions of this provider after `0.0.12`. 
 - `args` - (List of String) List of args to pass to command
 - `env` - (Map of String) Environment variables to set
