@@ -29,7 +29,7 @@ func TestProviderTokenExec(t *testing.T) {
 			"token":                  "testToken",
 			"exec": []interface{}{
 				map[string]interface{}{
-					"api_version": "client.authentication.k8s.io/v1alpha1",
+					"api_version": "client.authentication.k8s.io/v1beta1",
 					"command":     "testCommand",
 					"env": map[string]interface{}{
 						"key1": "value1",
@@ -80,7 +80,7 @@ users:
   user:
     token: testToken
     exec:
-      apiVersion: client.authentication.k8s.io/v1alpha1
+      apiVersion: client.authentication.k8s.io/v1beta1
       command: testCommand
       env:
       - name: "key1"

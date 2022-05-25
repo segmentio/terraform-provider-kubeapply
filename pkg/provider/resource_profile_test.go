@@ -90,7 +90,7 @@ provider "kubeapply" {
   cluster_ca_certificate = "testCACertificate"
   token = "testToken"
   exec {
-    api_version = "client.authentication.k8s.io/v1alpha1"
+    api_version = "client.authentication.k8s.io/v1beta1"
     args        = ["eks", "get-token", "--cluster-name", "testCluster"]
     command     = "aws"
   }
@@ -131,7 +131,7 @@ provider "kubeapply" {
   cluster_ca_certificate = "testCACertificate"
   token = "testToken"
   exec {
-    api_version = "client.authentication.k8s.io/v1alpha1"
+    api_version = "client.authentication.k8s.io/v1beta1"
     args        = ["eks", "get-token", "--cluster-name", "testCluster"]
     command     = "aws"
   }
@@ -165,7 +165,7 @@ provider "kubeapply" {
   cluster_ca_certificate = "testCACertificate"
   token = "testToken"
   exec {
-    api_version = "client.authentication.k8s.io/v1alpha1"
+    api_version = "client.authentication.k8s.io/v1beta1"
     args        = ["eks", "get-token", "--cluster-name", "testCluster"]
     command     = "aws"
   }
@@ -193,7 +193,7 @@ provider "kubeapply" {
   cluster_ca_certificate = "testCACertificate"
   token = "testToken"
   exec {
-    api_version = "client.authentication.k8s.io/v1alpha1"
+    api_version = "client.authentication.k8s.io/v1beta1"
     args        = ["eks", "get-token", "--cluster-name", "testCluster"]
     command     = "aws"
   }
@@ -227,7 +227,7 @@ provider "kubeapply" {
   cluster_ca_certificate = "testCACertificate"
   token = "testToken"
   exec {
-    api_version = "client.authentication.k8s.io/v1alpha1"
+    api_version = "client.authentication.k8s.io/v1beta1"
     args        = ["eks", "get-token", "--cluster-name", "testCluster"]
     command     = "aws"
   }
