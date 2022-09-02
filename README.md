@@ -5,6 +5,8 @@ This repo contains a Terraform-provider-based version of
 and applying arbitrary, templated YAML manifests in a Kubernetes cluster via
 [Terraform](https://www.terraform.io/).
 
+For usage instructions see `docs/index.md`.
+
 ## Motivation
 
 After using `kubeapply` for a year inside Segment, we decided to support the same flow
