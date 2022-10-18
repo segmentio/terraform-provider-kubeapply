@@ -122,13 +122,13 @@ func TestManifestIDToComponents(t *testing.T) {
 	assert.Equal(
 		t,
 		idComponents{
-			api:       "apiextensions.k8s.io/v1beta1",
+			api:       "apiextensions.k8s.io/v1",
 			kind:      "CustomResourceDefinition",
 			namespace: "",
 			name:      "analysisruns.argoproj.io",
 		},
 		manifestIDToComponents(
-			"apiextensions.k8s.io/v1beta1.CustomResourceDefinition..analysisruns.argoproj.io",
+			"apiextensions.k8s.io/v1.CustomResourceDefinition..analysisruns.argoproj.io",
 		),
 	)
 	assert.Equal(
