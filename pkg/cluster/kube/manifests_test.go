@@ -16,16 +16,20 @@ const (
 
 ---
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: pod-log-reader
 rules:
-- apiGroups: [""]
+- apiGroups:
+  - ""
   resources:
-    - namespaces
-    - pods
-  verbs: ["get", "list", "watch"]
+  - namespaces
+  - pods
+  verbs:
+  - get
+  - list
+  - watch
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -35,7 +39,7 @@ metadata:
   annotations:
     eks.amazonaws.com/role-arn: arn:aws:iam::184402915685:role/ob-yolken.usw2.eks.fluentbit
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: pod-log-crb
@@ -122,13 +126,13 @@ func TestManifestIDToComponents(t *testing.T) {
 	assert.Equal(
 		t,
 		idComponents{
-			api:       "apiextensions.k8s.io/v1beta1",
+			api:       "apiextensions.k8s.io/v1",
 			kind:      "CustomResourceDefinition",
 			namespace: "",
 			name:      "analysisruns.argoproj.io",
 		},
 		manifestIDToComponents(
-			"apiextensions.k8s.io/v1beta1.CustomResourceDefinition..analysisruns.argoproj.io",
+			"apiextensions.k8s.io/v1.CustomResourceDefinition..analysisruns.argoproj.io",
 		),
 	)
 	assert.Equal(
