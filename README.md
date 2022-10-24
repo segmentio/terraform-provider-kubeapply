@@ -88,3 +88,87 @@ be done automatically if `kaexpand` is run with the `--diff` or `--apply` flags,
 
 Note that `kaexpand` does not parse your terraform configs so it will not understand things
 like module defaults. This may be added in the future.
+
+## Known Issues
+
+### Boolean parameters converted to strings
+
+When parameters from a resource block are passed into a manifest template, booleans are converted into strings.
+
+Example:
+
+```
+// ./profile.tf
+
+variable "flag" {
+  type    = bool
+    default = false
+}
+
+resource "kubeapply_profile" "profile" {
+  source = "${path.module}/manifests"
+
+    parameters = {
+      flag = var.flag
+    }
+}
+```
+
+```
+// ./manifests/template.gotpl.txt
+
+{{ if .Parameters.flag }}
+Flag is true
+{{ else }}
+Flag is false
+{{ end }}
+```
+
+The expected output produced by the template is "Flag is false", but due to a bug, the output is "Flag is true".
+
+There are two workarounds for this that can be found in the wild.
+
+One option is to change the parameter in terraform to a `set`:
+
+```
+resource "kubeapply_profile" "profile" {
+  // ...
+
+  set {
+    name = "flag"
+      value = jsonencode(var.flag)
+  }
+}
+```
+
+The other option is to use a string equality check within the template:
+```
+{{ if eq .Parameters.flag "true" }}
+Flag is true
+{{ else }}
+Flag is false
+{{ end }}
+```
+
+### Terraform apply throws error when deleting resources
+
+When deleting manifests or kubeapply profiles, the following error may appear on apply:
+
+```
+│ Error: exit status 1
+│ 
+│ error: there is no need to specify a resource type as a separate argument
+│ when passing arguments in resource/name form (e.g. 'kubectl get
+│ resource/<resource_name>' instead of 'kubectl get resource
+│ resource/<resource_name>'
+```
+
+The only workaround for this is to set `allow_deletes` to `false` in the kubeapply provider for the workspace.
+
+```
+provider "kubeapply" {
+  allow_deletes = false
+}
+```
+
+**NOTE:** This will cause the resources to be deleted from Terraform, but remain in the cluster (i.e. they will be unmanaged). In many cases, this means you will need to go into the cluster and delete the orphaned resources.
