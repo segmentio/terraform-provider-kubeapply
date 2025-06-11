@@ -1,6 +1,6 @@
 module github.com/segmentio/terraform-provider-kubeapply
 
-go 1.17
+go 1.24.2
 
 require (
 	github.com/Masterminds/sprig/v3 v3.2.2
