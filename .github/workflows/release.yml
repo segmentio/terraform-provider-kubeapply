@@ -1,13 +1,16 @@
-# This GitHub action can publish assets for release when a tag is created.
+# This GitHub action publishes assets for release when a tag is created.
 # Currently its setup to run on any tag that matches the pattern "v*" (ie. v0.1.0).
 #
-# This uses an action (hashicorp/ghaction-import-gpg) that assumes you set your
-# private key in the `GPG_PRIVATE_KEY` secret and passphrase in the `PASSPHRASE`
-# secret. If you would rather own your own GPG handling, please fork this action
-# or use an alternative one for key handling.
+# The GPG key used for signing is read from the `GPG_PRIVATE_KEY` secret and its
+# passphrase from the `PASSPHRASE` secret. The key is imported into a throwaway
+# GNUPGHOME and its passphrase is preset into gpg-agent, so that the
+# `gpg --batch ... --detach-sign` invocation configured in .goreleaser.yml can
+# sign non-interactively.
 #
-# You will need to pass the `--batch` flag to `gpg` in your signing step
-# in `goreleaser` to indicate this is being used in a non-interactive mode.
+# NOTE: this workflow deliberately uses `run:` steps instead of the upstream
+# hashicorp/ghaction-import-gpg and goreleaser/goreleaser-action actions. The
+# GitHub Enterprise policy on this org only permits actions owned by the
+# enterprise or created by GitHub, so those two actions fail the run at startup.
 #
 name: release
 on:
@@ -17,32 +20,59 @@ on:
 jobs:
   goreleaser:
     runs-on: ubuntu-latest-large
+    permissions:
+      # goreleaser needs to create the GitHub Release and upload assets
+      contents: write
     steps:
-      -
-        name: Checkout
+      - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
-      -
-        name: Unshallow
-        run: git fetch --prune --unshallow
-      -
-        name: Set up Go
+        with:
+          # goreleaser needs full history and tags to determine the version
+          fetch-depth: 0
+
+      - name: Set up Go
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e  # v7.0.0
         with:
           go-version: 1.27.1
-      -
-        name: Import GPG key
+
+      - name: Import GPG key
         id: import_gpg
-        uses: hashicorp/ghaction-import-gpg@78437f97569a473e42b227be84d4084c2dfb49ba  # v2.1.0
         env:
-          # These secrets will need to be configured for the repository:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           PASSPHRASE: ${{ secrets.PASSPHRASE }}
-      -
-        name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@f06c13b6b1a9625abc9e6e439d9c05a8f2190e94  # v7.2.3
-        with:
-          version: latest
-          args: release --clean
+        run: |
+          set -euo pipefail
+
+          export GNUPGHOME="${RUNNER_TEMP}/gnupg"
+          install -d -m 700 "$GNUPGHOME"
+          # carry the keyring location to the GoReleaser step
+          echo "GNUPGHOME=$GNUPGHOME" >> "$GITHUB_ENV"
+
+          # let gpg-agent hold the passphrase so `gpg --batch` never prompts
+          printf 'allow-preset-passphrase\ndefault-cache-ttl 7200\nmax-cache-ttl 31536000\n' \
+            > "$GNUPGHOME/gpg-agent.conf"
+          gpgconf --kill gpg-agent || true
+          gpg-connect-agent /bye >/dev/null
+
+          printf '%s\n' "$GPG_PRIVATE_KEY" | gpg --batch --yes --import
+
+          FPR="$(gpg --list-secret-keys --with-colons | awk -F: '$1=="fpr" {print $10; exit}')"
+          echo "fingerprint=$FPR" >> "$GITHUB_OUTPUT"
+          echo "imported key $FPR"
+
+          # preset the passphrase for every keygrip (primary key + signing subkey)
+          PRESET="$(gpgconf --list-dirs libexecdir)/gpg-preset-passphrase"
+          gpg --list-secret-keys --with-colons --with-keygrip \
+            | awk -F: '$1=="grp" {print $10}' \
+            | while read -r GRIP; do
+                "$PRESET" --preset --passphrase "$PASSPHRASE" "$GRIP"
+              done
+
+      - name: Install GoReleaser
+        run: go install github.com/goreleaser/goreleaser/v2@v2.18.2
+
+      - name: Run GoReleaser
+        run: goreleaser release --clean
         env:
           GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
           # GitHub sets this automatically

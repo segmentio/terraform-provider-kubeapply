@@ -27,6 +27,11 @@ builds:
     ignore:
       - goos: darwin
         goarch: '386'
+      # Go 1.27 removed the 32-bit windows/arm target, so this combination no
+      # longer builds. Listed explicitly so the dropped platform is visible
+      # rather than silently skipped. Last shipped in v0.0.13.
+      - goos: windows
+        goarch: arm
     binary: '{{ .ProjectName }}_v{{ .Version }}'
 archives:
   - formats:
