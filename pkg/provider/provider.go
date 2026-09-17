@@ -4,7 +4,6 @@ import (
 	"context"
 	_ "embed"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"time"
 
@@ -223,7 +222,7 @@ func providerConfigure(
 		Version:     data.Get("cluster_version").(string),
 	}
 
-	tempDir, err := ioutil.TempDir("", "kubeapply_kubeconfig_")
+	tempDir, err := os.MkdirTemp("", "kubeapply_kubeconfig_")
 	if err != nil {
 		return nil, diag.FromErr(err)
 	}

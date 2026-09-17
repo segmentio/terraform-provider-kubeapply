@@ -4,16 +4,15 @@ import (
 	"bufio"
 	"crypto/sha1"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
 
-	"github.com/ghodss/yaml"
-	"github.com/pmezard/go-difflib/difflib"
+	udiff "github.com/aymanbagabas/go-udiff"
 	"github.com/segmentio/terraform-provider-kubeapply/pkg/cluster/apply"
 	log "github.com/sirupsen/logrus"
+	"sigs.k8s.io/yaml"
 )
 
 // DiffConfig configures how Kubernetes diffs should be generated.
@@ -185,15 +184,17 @@ func evalDiffs(
 		return nil, nil
 	}
 
-	diff := difflib.UnifiedDiff{
-		A:        oldLines,
-		B:        newLines,
-		FromFile: fmt.Sprintf("Server:%s", oldName),
-		ToFile:   fmt.Sprintf("Local:%s", newName),
-		Context:  config.ContextLines,
-	}
+	// Each line from getFileLines already ends in a newline, so join with "".
+	oldContents := strings.Join(oldLines, "")
+	newContents := strings.Join(newLines, "")
 
-	diffStr, err := difflib.GetUnifiedDiffString(diff)
+	diffStr, err := udiff.ToUnified(
+		fmt.Sprintf("Server:%s", oldName),
+		fmt.Sprintf("Local:%s", newName),
+		oldContents,
+		udiff.Strings(oldContents, newContents),
+		config.ContextLines,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -283,7 +284,7 @@ func getFileLines(path string, maxLineLength int) ([]string, string, error) {
 func getFileObj(path string) (*apply.TypedKubeObj, error) {
 	obj := apply.TypedKubeObj{}
 
-	contents, err := ioutil.ReadFile(path)
+	contents, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}

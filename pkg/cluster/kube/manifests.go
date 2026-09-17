@@ -3,14 +3,13 @@ package kube
 import (
 	"crypto/md5"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
 
-	"github.com/ghodss/yaml"
 	log "github.com/sirupsen/logrus"
+	"sigs.k8s.io/yaml"
 )
 
 // KindOrder specifies the order in which Kubernetes resource types should be applied. Adapted from
@@ -96,7 +95,7 @@ func GetManifests(paths []string) ([]Manifest, error) {
 					return nil
 				}
 
-				contents, err := ioutil.ReadFile(subPath)
+				contents, err := os.ReadFile(subPath)
 				if err != nil {
 					return err
 				}

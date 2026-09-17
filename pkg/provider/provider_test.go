@@ -3,7 +3,7 @@ package provider
 import (
 	"context"
 	"encoding/base64"
-	"io/ioutil"
+	"os"
 	"strings"
 	"testing"
 
@@ -55,7 +55,7 @@ func TestProviderTokenExec(t *testing.T) {
 	providerCtx := provider.Meta().(*providerContext)
 	kubeConfigPath := providerCtx.clusterClient.Config().KubeConfigPath
 
-	kubeConfig, err := ioutil.ReadFile(kubeConfigPath)
+	kubeConfig, err := os.ReadFile(kubeConfigPath)
 	require.Nil(t, err)
 
 	assert.Equal(
@@ -127,7 +127,7 @@ func TestProviderBasic(t *testing.T) {
 	providerCtx := provider.Meta().(*providerContext)
 	kubeConfigPath := providerCtx.clusterClient.Config().KubeConfigPath
 
-	kubeConfig, err := ioutil.ReadFile(kubeConfigPath)
+	kubeConfig, err := os.ReadFile(kubeConfigPath)
 	require.Nil(t, err)
 
 	assert.Equal(

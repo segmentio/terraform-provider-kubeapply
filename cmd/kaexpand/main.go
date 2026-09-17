@@ -4,21 +4,19 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"math/rand"
 	"os"
 	"strings"
 	"time"
 
 	"github.com/fatih/color"
-	"github.com/ghodss/yaml"
 	"github.com/segmentio/cli"
 	"github.com/segmentio/terraform-provider-kubeapply/pkg/cluster"
 	"github.com/segmentio/terraform-provider-kubeapply/pkg/cluster/diff"
 	"github.com/segmentio/terraform-provider-kubeapply/pkg/util"
 	log "github.com/sirupsen/logrus"
-	prefixed "github.com/x-cray/logrus-prefixed-formatter"
 	"k8s.io/klog/v2"
+	"sigs.k8s.io/yaml"
 )
 
 const (
@@ -61,7 +59,7 @@ type kaExpandConfig struct {
 }
 
 func init() {
-	log.SetFormatter(&prefixed.TextFormatter{
+	log.SetFormatter(&log.TextFormatter{
 		TimestampFormat: "2006-01-02 15:04:05",
 		FullTimestamp:   true,
 	})
@@ -103,7 +101,7 @@ func main() {
 					outputDir = config.Output
 				} else {
 					var err error
-					outputDir, err = ioutil.TempDir("", "expanded_")
+					outputDir, err = os.MkdirTemp("", "expanded_")
 					if err != nil {
 						log.Fatal(err)
 					}

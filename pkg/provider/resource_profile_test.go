@@ -6,7 +6,6 @@ import (
 	"encoding/binary"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -27,7 +26,7 @@ import (
 
 func TestResourceProfile(t *testing.T) {
 	ctx := context.Background()
-	tempDir, err := ioutil.TempDir("", "kubeapply_test_profile_")
+	tempDir, err := os.MkdirTemp("", "kubeapply_test_profile_")
 	require.NoError(t, err)
 	defer os.RemoveAll(tempDir)
 
@@ -72,8 +71,10 @@ func TestResourceProfile(t *testing.T) {
 		t,
 		resource.TestCase{
 			IsUnitTest: true,
-			Providers: map[string]*schema.Provider{
-				"kubeapply": Provider(providerCtx),
+			ProviderFactories: map[string]func() (*schema.Provider, error){
+				"kubeapply": func() (*schema.Provider, error) {
+					return Provider(providerCtx), nil
+				},
 			},
 			Steps: []resource.TestStep{
 				// First, do create
@@ -249,7 +250,7 @@ resource "kubeapply_profile" "main_profile" {
 	)
 
 	expandedRoot := filepath.Join(tempDir, "expanded")
-	subDirs, err := ioutil.ReadDir(expandedRoot)
+	subDirs, err := os.ReadDir(expandedRoot)
 	require.NoError(t, err)
 	require.Greater(t, len(subDirs), 0)
 
@@ -328,7 +329,7 @@ resource "kubeapply_profile" "main_profile" {
 
 func TestResourceProfileDeletesAllowed(t *testing.T) {
 	ctx := context.Background()
-	tempDir, err := ioutil.TempDir("", "kubeapply_test_profile_")
+	tempDir, err := os.MkdirTemp("", "kubeapply_test_profile_")
 	require.NoError(t, err)
 	defer os.RemoveAll(tempDir)
 
@@ -373,8 +374,10 @@ func TestResourceProfileDeletesAllowed(t *testing.T) {
 		t,
 		resource.TestCase{
 			IsUnitTest: true,
-			Providers: map[string]*schema.Provider{
-				"kubeapply": Provider(providerCtx),
+			ProviderFactories: map[string]func() (*schema.Provider, error){
+				"kubeapply": func() (*schema.Provider, error) {
+					return Provider(providerCtx), nil
+				},
 			},
 			Steps: []resource.TestStep{
 				// First, do create
@@ -482,7 +485,7 @@ provider "kubeapply" {
 
 func TestResourceProfileDeletesDisabled(t *testing.T) {
 	ctx := context.Background()
-	tempDir, err := ioutil.TempDir("", "kubeapply_test_profile_")
+	tempDir, err := os.MkdirTemp("", "kubeapply_test_profile_")
 	require.NoError(t, err)
 	defer os.RemoveAll(tempDir)
 
@@ -527,8 +530,10 @@ func TestResourceProfileDeletesDisabled(t *testing.T) {
 		t,
 		resource.TestCase{
 			IsUnitTest: true,
-			Providers: map[string]*schema.Provider{
-				"kubeapply": Provider(providerCtx),
+			ProviderFactories: map[string]func() (*schema.Provider, error){
+				"kubeapply": func() (*schema.Provider, error) {
+					return Provider(providerCtx), nil
+				},
 			},
 			Steps: []resource.TestStep{
 				// First, do create
@@ -623,7 +628,7 @@ provider "kubeapply" {
 
 func TestResourceProfileCanNotRun(t *testing.T) {
 	ctx := context.Background()
-	tempDir, err := ioutil.TempDir("", "kubeapply_test_profile_")
+	tempDir, err := os.MkdirTemp("", "kubeapply_test_profile_")
 	require.NoError(t, err)
 	defer os.RemoveAll(tempDir)
 
@@ -668,8 +673,10 @@ func TestResourceProfileCanNotRun(t *testing.T) {
 		t,
 		resource.TestCase{
 			IsUnitTest: true,
-			Providers: map[string]*schema.Provider{
-				"kubeapply": Provider(providerCtx),
+			ProviderFactories: map[string]func() (*schema.Provider, error){
+				"kubeapply": func() (*schema.Provider, error) {
+					return Provider(providerCtx), nil
+				},
 			},
 			Steps: []resource.TestStep{
 				{
@@ -705,7 +712,7 @@ resource "kubeapply_profile" "main_profile" {
 
 func TestDiffs(t *testing.T) {
 	ctx := context.Background()
-	tempDir, err := ioutil.TempDir("", "kubeapply_test_profile_")
+	tempDir, err := os.MkdirTemp("", "kubeapply_test_profile_")
 	require.NoError(t, err)
 	defer os.RemoveAll(tempDir)
 

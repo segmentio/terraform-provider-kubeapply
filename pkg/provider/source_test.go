@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -21,7 +20,7 @@ func TestSourceGet(t *testing.T) {
 	require.NoError(t, err)
 	defer sourceFetcherObj.cleanup()
 
-	tempDir, err := ioutil.TempDir("", "kubeapply_test_sources_")
+	tempDir, err := os.MkdirTemp("", "kubeapply_test_sources_")
 	require.NoError(t, err)
 	defer os.RemoveAll(tempDir)
 

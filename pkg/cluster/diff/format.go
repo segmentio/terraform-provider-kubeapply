@@ -5,37 +5,38 @@ import (
 	"fmt"
 
 	"github.com/olekukonko/tablewriter"
+	"github.com/olekukonko/tablewriter/renderer"
+	"github.com/olekukonko/tablewriter/tw"
 )
 
 // ResultsTable returns a table that summarizes a slice of result diffs.
 func ResultsTable(results []Result) string {
 	buf := &bytes.Buffer{}
 
-	table := tablewriter.NewWriter(buf)
-	table.SetHeader(
-		[]string{
-			"Namespace",
-			"Kind",
-			"Name",
-			"Changed Lines",
-		},
+	table := tablewriter.NewTable(
+		buf,
+		tablewriter.WithRenderer(
+			renderer.NewBlueprint(
+				tw.Rendition{
+					Symbols: tw.NewSymbols(tw.StyleASCII),
+					Borders: tw.Border{
+						Left:   tw.Off,
+						Right:  tw.Off,
+						Top:    tw.On,
+						Bottom: tw.On,
+					},
+				},
+			),
+		),
+		tablewriter.WithHeaderAutoWrap(tw.WrapNone),
+		tablewriter.WithRowAutoWrap(tw.WrapNone),
+		tablewriter.WithRowAlignment(tw.AlignLeft),
 	)
-	table.SetAutoWrapText(false)
-	table.SetColumnAlignment(
-		[]int{
-			tablewriter.ALIGN_LEFT,
-			tablewriter.ALIGN_LEFT,
-			tablewriter.ALIGN_LEFT,
-			tablewriter.ALIGN_LEFT,
-		},
-	)
-	table.SetBorders(
-		tablewriter.Border{
-			Left:   false,
-			Top:    true,
-			Right:  false,
-			Bottom: true,
-		},
+	table.Header(
+		"Namespace",
+		"Kind",
+		"Name",
+		"Changed Lines",
 	)
 
 	for _, result := range results {

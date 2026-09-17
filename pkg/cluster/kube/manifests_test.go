@@ -1,7 +1,6 @@
 package kube
 
 import (
-	"io/ioutil"
 	"os"
 	"strings"
 	"testing"
@@ -71,7 +70,7 @@ data:
 )
 
 func TestGetManifests(t *testing.T) {
-	outDir, err := ioutil.TempDir("", "kubeapply_test_data_")
+	outDir, err := os.MkdirTemp("", "kubeapply_test_data_")
 	if err != nil {
 		assert.FailNow(t, "Cannot create tempDir: %+v", err)
 	}

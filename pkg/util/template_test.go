@@ -1,7 +1,6 @@
 package util
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -12,7 +11,7 @@ import (
 )
 
 func TestApplyTemplate(t *testing.T) {
-	tempDir, err := ioutil.TempDir("", "kubeapply_test_templates_")
+	tempDir, err := os.MkdirTemp("", "kubeapply_test_templates_")
 	require.Nil(t, err)
 	defer os.RemoveAll(tempDir)
 
@@ -85,7 +84,7 @@ configMap2:
 }
 
 func TestApplyTemplateStrict(t *testing.T) {
-	tempDir, err := ioutil.TempDir("", "kubeapply_test_templates_")
+	tempDir, err := os.MkdirTemp("", "kubeapply_test_templates_")
 	require.Nil(t, err)
 	defer os.RemoveAll(tempDir)
 
@@ -131,7 +130,7 @@ func getAllFiles(t *testing.T, path string) []string {
 }
 
 func fileContents(t *testing.T, path string) string {
-	contents, err := ioutil.ReadFile(path)
+	contents, err := os.ReadFile(path)
 	require.Nil(t, err)
 
 	return string(contents)
