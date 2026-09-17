@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -13,7 +12,7 @@ import (
 	"text/template"
 
 	"github.com/Masterminds/sprig/v3"
-	"github.com/ghodss/yaml"
+	"sigs.k8s.io/yaml"
 )
 
 var (
@@ -171,7 +170,7 @@ func configMapEntriesGenerator(
 			relPath,
 		)
 
-		dirFiles, err := ioutil.ReadDir(dirPath)
+		dirFiles, err := os.ReadDir(dirPath)
 		if err != nil {
 			return "", err
 		}

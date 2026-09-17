@@ -5,7 +5,6 @@ import (
 	"context"
 	_ "embed"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -59,7 +58,7 @@ func (k *OrderedClient) Apply(
 	format string,
 	dryRun bool,
 ) ([]byte, error) {
-	tempDir, err := ioutil.TempDir("", "kubeapply_manifests_")
+	tempDir, err := os.MkdirTemp("", "kubeapply_manifests_")
 	if err != nil {
 		return nil, err
 	}
@@ -100,7 +99,7 @@ func (k *OrderedClient) Apply(
 			),
 		)
 
-		err = ioutil.WriteFile(tempPath, []byte(manifest.Contents), 0644)
+		err = os.WriteFile(tempPath, []byte(manifest.Contents), 0644)
 		if err != nil {
 			return nil, err
 		}
@@ -149,7 +148,7 @@ func (k *OrderedClient) Diff(
 ) ([]byte, error) {
 	var diffCmd string
 
-	tempDir, err := ioutil.TempDir("", "kubeapply_diff_")
+	tempDir, err := os.MkdirTemp("", "kubeapply_diff_")
 	if err != nil {
 		return nil, err
 	}
@@ -187,10 +186,10 @@ func (k *OrderedClient) Diff(
 		diffCmd = "kadiff"
 	} else {
 		diffScriptPath = "raw-diff.sh"
-		diffScriptPath = rawDiffScript
+		diffScriptContents = rawDiffScript
 
 		diffCmd = filepath.Join(tempDir, diffScriptPath)
-		err = ioutil.WriteFile(
+		err = os.WriteFile(
 			diffCmd,
 			[]byte(diffScriptContents),
 			0755,

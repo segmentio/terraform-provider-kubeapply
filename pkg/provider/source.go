@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -37,7 +36,7 @@ func (s *sourceFetcher) get(ctx context.Context, source string, dest string) err
 
 		log.Infof("Cloning repo with source %s", source)
 
-		cloneDir, err := ioutil.TempDir("", "kubeapply_clone_")
+		cloneDir, err := os.MkdirTemp("", "kubeapply_clone_")
 		if err != nil {
 			return err
 		}

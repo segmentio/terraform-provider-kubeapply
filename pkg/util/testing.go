@@ -3,7 +3,6 @@ package util
 import (
 	"bytes"
 	"encoding/json"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -48,7 +47,7 @@ func WriteFiles(t *testing.T, baseDir string, files map[string]string) {
 			}
 		}
 
-		err = ioutil.WriteFile(fullPath, []byte(contents), 0644)
+		err = os.WriteFile(fullPath, []byte(contents), 0644)
 		if err != nil {
 			assert.FailNow(t, "Error creating file: %+v", err)
 		}
@@ -70,7 +69,7 @@ func GetContents(t *testing.T, root string) map[string][]string {
 			if info.IsDir() {
 				return nil
 			}
-			contents, err := ioutil.ReadFile(subPath)
+			contents, err := os.ReadFile(subPath)
 			if err != nil {
 				return err
 			}
@@ -96,7 +95,7 @@ func GetContents(t *testing.T, root string) map[string][]string {
 
 // GetFileContents gets the string contents of a single file.
 func GetFileContents(t *testing.T, path string) string {
-	contents, err := ioutil.ReadFile(path)
+	contents, err := os.ReadFile(path)
 	require.NoError(t, err)
 	return string(contents)
 }

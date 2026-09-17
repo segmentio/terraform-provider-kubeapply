@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/fs"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -136,7 +135,7 @@ func (p *providerContext) expand(
 			return err
 		}
 
-		contents, err := ioutil.ReadFile(path)
+		contents, err := os.ReadFile(path)
 		if err != nil {
 			return err
 		}
@@ -384,7 +383,7 @@ func (p *providerContext) clusterConfigHash(
 			if info.IsDir() {
 				return nil
 			}
-			contents, err := ioutil.ReadFile(subPath)
+			contents, err := os.ReadFile(subPath)
 			if err != nil {
 				return err
 			}

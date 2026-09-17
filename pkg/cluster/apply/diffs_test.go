@@ -1,7 +1,7 @@
 package apply
 
 import (
-	"io/ioutil"
+	"os"
 	"testing"
 	"time"
 
@@ -108,7 +108,7 @@ func TestObjsToResults(t *testing.T) {
 }
 
 func loadFixtures(t *testing.T, path string, prefix []byte) []byte {
-	contents, err := ioutil.ReadFile(path)
+	contents, err := os.ReadFile(path)
 	require.Nil(t, err)
 
 	if len(prefix) > 0 {

@@ -1,11 +1,11 @@
 # Fetch or build all required binaries
-FROM golang:1.17 as builder
+FROM golang:1.27.1 as builder
 
 ARG VERSION_REF
 RUN test -n "${VERSION_REF}"
 
-ENV KUBECTL_VERSION "v1.20.7"
-ENV KUBECTL_SHA512_SUM "e7bac0324907e48fba1bb9cf0eea3a68f9645591a6e09c6f0af36f3bead88765d85039f0114fae41697a7101df90cf02a18628ef677c7e5e41f2f14c24e6046e"
+ENV KUBECTL_VERSION "v1.37.0"
+ENV KUBECTL_SHA512_SUM "ff61f94cf73281e24b8b7f16bd7ae15a928ef886399a2e8a360c170828babade73aeb284d37c596fc6c7dc68876b1550b714c1fc3ac4263adb8aef9e30a7c42f"
 
 RUN apt-get update && apt-get install --yes \
     curl \
@@ -30,7 +30,7 @@ RUN make kadiff VERSION_REF=${VERSION_REF} && \
     cp build/kadiff /usr/local/bin
 
 # Copy into final image
-FROM ubuntu:20.04
+FROM ubuntu:26.04
 
 RUN apt-get update && apt-get install --yes curl git
 
